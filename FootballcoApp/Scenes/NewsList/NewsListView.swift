@@ -14,7 +14,7 @@ struct NewsListView: View {
     var body: some View {
         List {
             ForEach(viewModel.articles) { article in
-                ArticleDetailsView(article: article, onTap: {})
+                NewsListRowView(article: article, onTap: { navigate(to: article) })
                     .listRowInsets(EdgeInsets())
             }
 
@@ -28,6 +28,10 @@ struct NewsListView: View {
         .listStyle(.plain)
         .navigationTitle("News")
         .overlay(LoadingIndicator(isLoading: viewModel.isLoading))
+    }
+
+    private func navigate(to article: Article) {
+        viewModel.binding.navigateTo.send(.newsDetails(for: article))
     }
 }
 

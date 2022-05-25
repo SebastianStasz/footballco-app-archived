@@ -11,6 +11,7 @@ import Foundation
 final class NewsListVM: ViewModel {
 
     struct Binding {
+        let navigateTo = PassthroughSubject<NewsListCoordinator.Destination, Never>()
         let loadMore = PassthroughSubject<Void, Never>()
     }
 

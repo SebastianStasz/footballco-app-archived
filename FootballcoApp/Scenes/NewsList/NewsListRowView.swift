@@ -1,5 +1,5 @@
 //
-//  ArticleDetailsView.swift
+//  NewsListRowView.swift
 //  FootballcoApp
 //
 //  Created by sebastianstaszczyk on 25/05/2022.
@@ -8,7 +8,7 @@
 import Kingfisher
 import SwiftUI
 
-struct ArticleDetailsView: View {
+struct NewsListRowView: View {
 
     let article: Article
     let onTap: () -> Void
@@ -40,18 +40,19 @@ struct ArticleDetailsView: View {
                     .font(.footnote)
                 }
             }
+            .frame(height: 80)
+            .padding(16)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .frame(height: 80)
-        .padding(16)
     }
 }
 
-struct ArticleDetailsView_Previews: PreviewProvider {
+struct NewsListRowView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ArticleDetailsView(article: .sample, onTap: {})
-            ArticleDetailsView(article: .sample, onTap: {})
+            NewsListRowView(article: .sample, onTap: {})
+            NewsListRowView(article: .sample, onTap: {})
                 .preferredColorScheme(.dark)
         }
         .previewLayout(.sizeThatFits)
