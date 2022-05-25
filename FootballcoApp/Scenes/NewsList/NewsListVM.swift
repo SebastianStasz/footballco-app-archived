@@ -33,6 +33,14 @@ final class NewsListVM: ViewModel {
         let isLoading = PassthroughSubject<Bool, Never>()
         let errorTracker = PassthroughSubject<Error, Never>()
 
+        binding.navigateTo
+            .sinkAndStore(on: self) { vm, destination in
+                if case let .newsDetails(article) = destination,
+                   let index = vm.articles.firstIndex(where: { $0.id == article.id }) {
+                    vm.articles[index].didOpenArticle()
+                }
+            }
+
         isLoading
             .filter { [weak self] _ in
                 !(self?.isMorePages ?? true)

@@ -19,6 +19,7 @@ struct NewsDetailsView: View {
                     .font(.title)
 
                 KFImage(viewModel.article.url)
+                    .placeholder { ProgressView() }
                     .resizable()
                     .scaledToFill()
                     .frame(height: 200)

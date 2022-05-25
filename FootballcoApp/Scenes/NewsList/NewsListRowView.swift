@@ -42,9 +42,15 @@ struct NewsListRowView: View {
             }
             .frame(height: 80)
             .padding(16)
+            .background(backgroundColor)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+
+    private var backgroundColor: Color {
+        if !article.wasRead { return .red.opacity(0.05) }
+        return Color(uiColor: .systemBackground)
     }
 }
 
