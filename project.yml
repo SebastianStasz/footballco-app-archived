@@ -1,0 +1,40 @@
+# Documentation
+# https://github.com/yonaskolb/XcodeGen/blob/master/Docs/ProjectSpec.md
+
+name: FootballcoApp
+
+settings:
+  base:
+    MARKETING_VERSION: 1.0
+    CURRENT_PROJECT_VERSION: 1
+
+options:
+  bundleIdPrefix: sebastian-staszczyk
+  groupSortPosition: bottom
+  platform: iOS
+  deploymentTarget:
+    iOS: 15.0
+
+packages:
+ Kingfisher:
+   url: https://github.com/onevcat/Kingfisher
+   from: 7.0.0
+
+targets:
+  FootballcoApp:
+    scheme:
+      testTargets:
+        - FootballcoApp
+        - name: FootballcoApp
+          parallelizable: true
+      gatherCoverageData: true
+    templates:
+      - FootballcoApp
+    dependencies:
+      - package: Kingfisher
+
+targetTemplates:
+    FootballcoApp:
+      platform: iOS
+      type: application
+      sources: [FootballcoApp]
