@@ -7,7 +7,11 @@
 
 import Foundation
 
-final class ArticlesService {
+protocol ArticlesServiceProtocol {
+    func getArticles(for page: Int) async throws -> [ArticleModel]
+}
+
+final class ArticlesService: ArticlesServiceProtocol {
 
     private let apiService: APIService
 
@@ -15,7 +19,7 @@ final class ArticlesService {
         self.apiService = apiService
     }
 
-    func getArticlesList(for page: Int) async throws -> [ArticleModel] {
+    func getArticles(for page: Int) async throws -> [ArticleModel] {
         try await apiService.execute(GetArticlesListRequest(for: page), type: .articleList)
     }
 }

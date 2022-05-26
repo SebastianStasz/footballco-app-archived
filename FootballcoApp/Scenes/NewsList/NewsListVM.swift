@@ -13,6 +13,7 @@ final class NewsListVM: ViewModel {
     struct Binding {
         let navigateTo = PassthroughSubject<NewsListCoordinator.Destination, Never>()
         let loadMore = PassthroughSubject<Void, Never>()
+        let refresh = PassthroughSubject<Void, Never>()
     }
 
     @Published private(set) var articles: [Article] = []
@@ -20,11 +21,13 @@ final class NewsListVM: ViewModel {
     @Published private(set) var isLoading = false
 
     private var currentPage = 1
-    private let service: ArticlesService
+    private let service: ArticlesServiceProtocol
 
     let binding = Binding()
 
-    init(coordinator: CoordinatorProtocol?, service: ArticlesService = .init()) {
+    init(coordinator: CoordinatorProtocol?,
+         service: ArticlesServiceProtocol = ArticlesService()
+    ) {
         self.service = service
         super.init(coordinator: coordinator)
     }
@@ -47,9 +50,16 @@ final class NewsListVM: ViewModel {
             }
             .assign(to: &$isLoading)
 
-        Publishers.Merge(Just(()), binding.loadMore)
+        let refresh = binding.refresh
+            .onNext(on: self, perform: { vm, _ in
+                vm.isMorePages = false
+                vm.currentPage = 1
+                vm.articles = []
+            })
+
+        Publishers.Merge3(Just(()), binding.loadMore, refresh)
             .perform(on: self, isLoading: isLoading, errorTracker: errorTracker) { vm, _ in
-                try await vm.service.getArticlesList(for: vm.currentPage)
+                try await vm.service.getArticles(for: vm.currentPage)
             }
             .map { $0.map { Article(from: $0) } }
             .sinkAndStore(on: self, action: { vm, articles in

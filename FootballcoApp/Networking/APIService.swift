@@ -40,12 +40,14 @@ final class APIService {
     }
 
     private func printDebug(for request: URLRequest) {
+        #if DEBUG
         let method = request.httpMethod ?? "Unknown httpMethod"
         let url = request.url?.absoluteString ?? "Unknown URL"
         let requestInfo = "\n⬆️ \(method) -> \(url)"
         let separators = Array(repeating: "-", count: requestInfo.count).joined()
         print(requestInfo)
         print(separators)
+        #endif
     }
 
     private func decode<Model: Decodable>(_ data: Data) throws -> Model {

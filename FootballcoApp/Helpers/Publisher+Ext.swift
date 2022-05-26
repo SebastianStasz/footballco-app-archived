@@ -10,6 +10,14 @@ import Foundation
 
 extension Publisher {
 
+    func onNext<T: AnyObject>(on object: T, perform: @escaping (T, Output) -> Void) -> AnyPublisher<Output, Failure> {
+        handleEvents(receiveOutput:  { [weak object] output in
+            guard let object = object else { return }
+            perform(object, output)
+        })
+        .eraseToAnyPublisher()
+    }
+
     func `await`<T>(_ transform: @escaping (Output) async throws -> T) -> Publishers.FlatMap<Future<T, Error>, Publishers.SetFailureType<Self, Error>> {
         flatMap { value in
             Future { promise in
@@ -64,9 +72,11 @@ extension Publisher {
                 errorTracker?.send(error)
                 isLoading?.send(false)
             }
+            #if DEBUG
             Swift.print("-----")
             Swift.print("‼️ \(error)")
             Swift.print("-----")
+            #endif
             return Just(nil).compactMap { $0 }.eraseToAnyPublisher()
         }
         .eraseToAnyPublisher()

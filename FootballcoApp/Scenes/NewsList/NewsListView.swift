@@ -13,21 +13,30 @@ struct NewsListView: View {
 
     var body: some View {
         List {
-            ForEach(viewModel.articles) { article in
-                NewsListRowView(article: article, onTap: { navigate(to: article) })
-                    .listRowInsets(EdgeInsets())
-            }
+            if !isEmptyState {
+                ForEach(viewModel.articles) { article in
+                    NewsListRowView(article: article, onTap: { navigate(to: article) })
+                        .listRowInsets(EdgeInsets())
+                }
 
-            if viewModel.isMorePages {
-                ProgressView()
-                    .frame(height: 60)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .onAppear { viewModel.binding.loadMore.send() }
+                if viewModel.isMorePages {
+                    ProgressView()
+                        .frame(height: 60)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .onAppear { viewModel.binding.loadMore.send() }
+                }
+            } else {
+                EmptyListView()
             }
         }
         .listStyle(.plain)
         .navigationTitle("News")
+        .refreshable { viewModel.binding.refresh.send() }
         .overlay(LoadingIndicator(isLoading: viewModel.isLoading))
+    }
+
+    private var isEmptyState: Bool {
+        viewModel.articles.isEmpty && !viewModel.isLoading
     }
 
     private func navigate(to article: Article) {
